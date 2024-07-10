@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otimização de Notas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Otimização de Notas para Média 7</h1>
+        <label for="nota">Nota do Aluno:</label><br>
+        <input type="number" id="nota" name="nota" min="0" max="10" step="0.1" required><br>
+        <button onclick="otimizarNota()">Otimizar Nota</button><br>
+        <p id="resultado"></p>
+    </div>
+
+    <script>
+        // Função para otimizar a nota para atingir a média desejada
+        function otimizarNota() {
+            // Obtém a nota fornecida e a média desejada
+            const nota = parseFloat(document.getElementById("nota").value);
+            const mediaDesejada = 7;
+
+            // Calcula a média atual (supondo que já existam outras notas)
+            let somaDasNotas = nota; // considerando apenas uma nota no momento
+            let numeroDeNotas = 1; // apenas uma nota no momento
+            let mediaAtual = somaDasNotas / numeroDeNotas;
+
+            // Verifica se a nota fornecida já está acima ou igual à média desejada
+            if (nota >= mediaDesejada) {
+                // Não é necessário ajustar a nota, exibe a nota original
+                document.getElementById("resultado").innerText = "Nota ajustada: " + nota;
+            } else {
+                // Calcula o fator de ajuste proporcional necessário para atingir a média desejada
+                let fatorDeAjuste = mediaDesejada / mediaAtual;
+
+                // Calcula e exibe a nota ajustada
+                let notaAjustada = nota * fatorDeAjuste;
+                document.getElementById("resultado").innerText = "Nota ajustada: " + notaAjustada.toFixed(1);
+            }
+        }
+    </script>
+</body>
+</html>

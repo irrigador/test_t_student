@@ -3,13 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teste t de Student</title>
+  <title>Menu Horizontal</title>
   <style>
-        body {
+    body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       margin: 0;
       padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background-color: #333;
+      padding: 10px;
+    }
+
+    .navbar a {
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
     }
 
     .container {
@@ -20,6 +39,11 @@
       border-radius: 5px;
       background-color: #fff;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .container.active {
+      display: block;
     }
 
     h1 {
@@ -64,27 +88,51 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="navbar">
+    <a href="#" onclick="showSection('menu1')">Menu1</a>
+    <a href="#" onclick="showSection('menu2')">Menu2</a>
+  </div>
+
+  <div id="menu1" class="container">
     <h1>Teste t de Student</h1>
     <label for="sample1">Amostra 1:</label>
-    <input type="text" id="sample1">
+    <input type="text" id="sample1-ttest">
     <label for="sample2">Amostra 2:</label>
-    <input type="text" id="sample2">
+    <input type="text" id="sample2-ttest">
     <button onclick="calculateTTest()">Calcular</button>
-    <p id="result"></p>
-    <canvas id="myChart" width="800" height="400"></canvas>
+    <p id="result-ttest"></p>
+    <canvas id="chart-ttest" width="800" height="400"></canvas>
   </div>
+
+  <div id="menu2" class="container">
+    <h1>Média Aritmética</h1>
+    <label for="sample1">Amostra 1:</label>
+    <input type="text" id="sample1-mean" placeholder="Digite os valores separados por vírgula">
+    <label for="sample2">Amostra 2:</label>
+    <input type="text" id="sample2-mean" placeholder="Digite os valores separados por vírgula">
+    <button onclick="calculateMean()">Calcular</button>
+    <p id="result-mean"></p>
+    <canvas id="chart-mean" width="800" height="400"></canvas>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart;
+    function showSection(sectionId) {
+      document.querySelectorAll('.container').forEach(function(container) {
+        container.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+    }
+
+    var ctxTTest = document.getElementById('chart-ttest').getContext('2d');
+    var myChartTTest;
 
     function calculateTTest() {
-      var sample1 = document.getElementById('sample1').value.split(',').map(Number);
-      var sample2 = document.getElementById('sample2').value.split(',').map(Number);
+      var sample1 = document.getElementById('sample1-ttest').value.split(',').map(Number);
+      var sample2 = document.getElementById('sample2-ttest').value.split(',').map(Number);
 
       var tValue = tTest(sample1, sample2);
-      var resultElement = document.getElementById('result');
+      var resultElement = document.getElementById('result-ttest');
 
       if (tValue !== null) {
         if (tValue > 2 || tValue < -2) {
@@ -93,13 +141,11 @@
           resultElement.textContent = 'Não há uma diferença significativa entre as médias das duas amostras.';
         }
 
-        // Remove o gráfico anterior, se existir
-        if (myChart) {
-          myChart.destroy();
+        if (myChartTTest) {
+          myChartTTest.destroy();
         }
 
-        // Cria um novo gráfico
-        myChart = new Chart(ctx, {
+        myChartTTest = new Chart(ctxTTest, {
           type: 'scatter',
           data: {
             datasets: [{
@@ -167,6 +213,47 @@
       }, 0);
       return Math.sqrt(sum / (sample.length - 1));
     }
+
+    function calculateMean() {
+      var sample1 = document.getElementById('sample1-mean').value.split(',').map(Number);
+      var sample2 = document.getElementById('sample2-mean').value.split(',').map(Number);
+
+      var mean1 = sampleMean(sample1);
+      var mean2 = sampleMean(sample2);
+      var resultElement = document.getElementById('result-mean');
+
+      resultElement.textContent = 'Média da Amostra 1: ' + mean1.toFixed(2) + ', Média da Amostra 2: ' + mean2.toFixed(2);
+
+      var ctxMean = document.getElementById('chart-mean').getContext('2d');
+      var myChartMean = new Chart(ctxMean, {
+        type: 'bar',
+        data: {
+          labels: ['Amostra 1', 'Amostra 2'],
+          datasets: [{
+            label: 'Média Aritmética',
+            data: [mean1, mean2],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)'
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    showSection('menu1');
   </script>
 </body>
 </html>
